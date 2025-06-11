@@ -9,6 +9,7 @@ from ignis.services.recorder import RecorderService
 from ignis.services.audio import AudioService
 from ..indicator_icon import IndicatorIcon, NetworkIndicatorIcon
 from ignis.options import options
+from .battery import Battery
 
 network = NetworkService.get_default()
 notifications = NotificationService.get_default()
@@ -83,6 +84,7 @@ class StatusPill(widgets.Button):
         super().__init__(
             child=widgets.Box(
                 child=[
+                    Battery(),
                     RecorderIcon(),
                     WifiIcon(),
                     EthernetIcon(),

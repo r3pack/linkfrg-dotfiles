@@ -18,7 +18,7 @@ class Bar(widgets.Window):
                 start_widget=widgets.Box(child=[Workspaces()]),
                 center_widget=widgets.Box(child=[Apps(), TaskList()]),
                 end_widget=widgets.Box(
-                    child=[Tray(), KeyboardLayout(), Battery(), StatusPill(monitor)]
+                    child=[Tray(), StatusPill(monitor)]
                 ),
             ),
             css_classes=["unset"],
