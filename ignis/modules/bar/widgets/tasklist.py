@@ -22,7 +22,6 @@ def find_best_desktop_match(search_term):
         Path("/usr/share/applications/"),
         Path.home() / ".local/share/applications/"
     ]
-    
     all_matches = []
     for desktop_dir in desktop_dirs:
         if not desktop_dir.exists():
@@ -98,9 +97,8 @@ def find_app_data_best_match(class_name) -> None:
     match = find_best_desktop_match(class_name)
     if match and (not best_match or match['score'] > best_match['score']):
         best_match = match
-    if best_match and best_match['score'] >= 4:  # Found perfect match
+    if best_match and best_match['score'] >= 3:  # Found perfect match
         desktop_info = get_desktop_info(best_match['path'])
-        print(desktop_info['icon'])
         return {
                 'icon': desktop_info['icon']
                 }
