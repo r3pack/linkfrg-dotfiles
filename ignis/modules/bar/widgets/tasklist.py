@@ -7,7 +7,7 @@ from ignis.app import IgnisApp
 from ignis.services.hyprland import HyprlandService, HyprlandWorkspace
 
 hyprland = HyprlandService.get_default()
-ignis_app = IgnisApp.get_default()
+ignis_app = IgnisApp.get_initialized()
 
 
 def is_main_desktop_file(desktop_file):
@@ -169,7 +169,7 @@ class TaskListWorkspace(widgets.Box):
 
         for win_id, app in self.running_apps.items():
             window = hyprland.get_window_by_address(win_id)
-            if window.workspace_id == self.workspace.id:
+            if window and window.workspace_id == self.workspace.id:
                 app_buttons.append(create_app_button(app, win_id))
 
         self.child = app_buttons
