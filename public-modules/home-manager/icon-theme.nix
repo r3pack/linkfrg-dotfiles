@@ -11,6 +11,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    gtk.enable = true;
     gtk.iconTheme = {
       name = "Papirus";
       package = pkgs.papirus-icon-theme;
