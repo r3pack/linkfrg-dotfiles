@@ -15,8 +15,8 @@ class Bar(widgets.Window):
             kb_mode="none",
             child=widgets.CenterBox(
                 css_classes=["bar-widget"],
-                start_widget=widgets.Box(child=[Workspaces(), WinTitle()]),
-                center_widget=widgets.Box(child=[Apps(), TaskList()]),
+                start_widget=widgets.Box(child=[Workspaces(), Apps(), TaskList()]),
+                center_widget=widgets.Box(child=[WinTitle()]),
                 end_widget=widgets.Box(
                     child=[Tray(), StatusPill(monitor)]
                 ),

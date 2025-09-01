@@ -10,7 +10,7 @@ class WinTitle(widgets.Box):
             css_classes=["wintitle", "unset"],
             child=[widgets.Label(
                 ellipsize="end",
-                max_width_chars=40,
+                max_width_chars=200,
                 label=hyprland.active_window.bind("title"),
             )]
         )
