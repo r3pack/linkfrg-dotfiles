@@ -4,6 +4,7 @@ from .volume import VolumeSlider
 from .user import User
 from .media import Media
 from .notification_center import NotificationCenter
+from .battery import Battery
 
 __all__ = [
     "QuickSettings",
@@ -12,4 +13,5 @@ __all__ = [
     "User",
     "Media",
     "NotificationCenter",
+    "Battery"
 ]

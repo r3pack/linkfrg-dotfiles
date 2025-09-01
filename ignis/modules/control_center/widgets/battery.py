@@ -11,7 +11,13 @@ class BatteryItem(widgets.Box):
             setup=lambda self: device.connect("removed", lambda x: self.unparent()),
             child=[
                 widgets.Icon(
-                    icon_name=device.bind("icon_name"), css_classes=["battery-icon"]
+                    icon_name=device.bind("icon_name"),
+                    css_classes=["material-slider-icon"],
+                    pixel_size=18,
+                ),
+                widgets.Label(
+                    label=device.bind("percent", lambda x: f"{int(x)}%"),
+                    css_classes=["battery-percent"],
                 ),
             ],
         )

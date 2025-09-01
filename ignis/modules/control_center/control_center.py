@@ -7,6 +7,7 @@ from .widgets import (
     User,
     Media,
     NotificationCenter,
+    Battery
 )
 from .menu import opened_menu
 
@@ -28,6 +29,7 @@ class ControlCenter(widgets.RevealerWindow):
                             VolumeSlider("speaker"),
                             VolumeSlider("microphone"),
                             Brightness(),
+                            Battery(),
                             User(),
                             Media(),
                         ],

@@ -55,11 +55,17 @@ icon_manager.add_icons(os.path.join(utils.get_current_dir(), "icons"))
 
 ControlCenter()
 
-for monitor in range(utils.get_n_monitors()):
-    Bar(monitor)
+added_on_external_monitor = False
+for i, monitor in enumerate(utils.get_monitors()):
+    connector = monitor.get_property('connector')
+    if any(x in connector for x in ('HDMI-', 'DVI-', 'USB-', 'DL-')):
+        Bar(i)
+        NotificationPopup(i)
+        added_on_external_monitor = True
 
-for monitor in range(utils.get_n_monitors()):
-    NotificationPopup(monitor)
+if added_on_external_monitor is False:
+    Bar(0)
+    NotificationPopup(0)
 
 Launcher()
 Powermenu()
