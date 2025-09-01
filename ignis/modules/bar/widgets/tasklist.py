@@ -17,11 +17,16 @@ def is_main_desktop_file(desktop_file):
     name = desktop_file.stem.lower()
     return not any(x in name for x in ['url-handler', 'handler', 'wayland', 'wrapper'])
 
+
 def find_best_desktop_match(search_term):
-    desktop_dirs = [
-        Path("/usr/share/applications/"),
-        Path.home() / ".local/share/applications/"
-    ]
+    # XDG base dirs
+    data_home = os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share"))
+    data_dirs = os.environ.get("XDG_DATA_DIRS", "/usr/local/share:/usr/share").split(":")
+
+    desktop_dirs = [Path(os.path.join(data_home, "applications"))]
+    for d in data_dirs:
+        desktop_dirs.append(Path(os.path.join(d, "applications")))
+
     all_matches = []
     for desktop_dir in desktop_dirs:
         if not desktop_dir.exists():
@@ -66,6 +71,7 @@ def find_best_desktop_match(search_term):
     
     return all_matches[0]
 
+
 def get_desktop_info(desktop_path):
     info = {"icon": ""}
     try:
@@ -77,13 +83,15 @@ def get_desktop_info(desktop_path):
         pass
     return info
 
-def get_windows_class_names() -> None:
+
+def get_windows_class_names():
     class_names = {}
     for k, v in hyprland._windows.items():
         class_names[k] = v._class_name
     return class_names
 
-def find_apps_data_best_match(class_names) -> None:
+
+def find_apps_data_best_match(class_names):
     best_matched_apps = {}
     best_match = None
     for win_id, class_name in class_names.items():
@@ -92,7 +100,8 @@ def find_apps_data_best_match(class_names) -> None:
             best_matched_apps[win_id] = app_data
     return best_matched_apps
 
-def find_app_data_best_match(class_name) -> None:
+
+def find_app_data_best_match(class_name):
     best_match = None
     match = find_best_desktop_match(class_name)
     if match and (not best_match or match['score'] > best_match['score']):
@@ -104,6 +113,7 @@ def find_app_data_best_match(class_name) -> None:
                 }
     return None
 
+
 def create_app_button(app, win_id):
     return widgets.Button(
                 child=widgets.Icon(image=app['icon'], pixel_size=32),
@@ -111,10 +121,12 @@ def create_app_button(app, win_id):
                 on_click=lambda self: focus_window(win_id)
             )
 
+
 def focus_window(win_id):
     subprocess.run(
         ["hyprctl", "dispatch", "focuswindow", "address:" + win_id]
     )
+
 
 class TaskList(widgets.Box):
     running_apps = {}

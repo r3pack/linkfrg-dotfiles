@@ -4,7 +4,7 @@ from ignis.services.system_tray import SystemTrayService, SystemTrayItem
 
 system_tray = SystemTrayService.get_default()
 
-IGNORED_IDS = {"nm-applet"}
+IGNORED_IDS = {}
 
 
 class TrayItem(widgets.Button):
@@ -19,7 +19,7 @@ class TrayItem(widgets.Button):
         super().__init__(
             child=widgets.Box(
                 child=[
-                    widgets.Icon(image=item.bind("icon"), pixel_size=16),
+                    widgets.Icon(image=item.bind("icon"), pixel_size=24),
                     menu,
                 ]
             ),
