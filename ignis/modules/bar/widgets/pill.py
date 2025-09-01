@@ -19,7 +19,7 @@ audio = AudioService.get_default()
 window_manager = WindowManager.get_default()
 
 current_time = Variable(
-    value=utils.Poll(1000, lambda x: datetime.datetime.now().strftime("%H:%M")).bind(
+    value=utils.Poll(1000, lambda x: datetime.datetime.now().strftime("%H:%M:%S")).bind(
         "output"
     )
 )

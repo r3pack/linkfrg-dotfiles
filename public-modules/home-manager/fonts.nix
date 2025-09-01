@@ -15,8 +15,11 @@ in {
 
      home.packages = with pkgs; [
       adwaita-fonts
+      jetbrains-mono
+      nerd-fonts.jetbrains-mono
     ];
 
+    gtk.enable = true;
     gtk.font.name = "Adwaita Sans";
   };
 }

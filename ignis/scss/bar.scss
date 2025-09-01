@@ -17,6 +17,9 @@
     margin-right: 0;
     transition: 0.3s;
 
+    font-family: JetBrainsMono;
+    font-weight: regular;
+
     &.active {
         background-color: $primary;
         color: $surface;
