@@ -14,8 +14,7 @@ in {
       enable = true;
       settings = {
         include = "~/.cache/ignis/material/dark_colors-kitty.conf";
-        font_size = 12;
-        font_family = "JetBrainsMono";
+        font_size = 9;
         window_margin_width = 15;
         remember_window_size = "no";
         background_opacity = 1;

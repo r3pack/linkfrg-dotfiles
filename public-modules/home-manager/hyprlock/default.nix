@@ -60,7 +60,7 @@ in {
             monitor = "";
             text = "cmd[update:1000] echo -e \"$(date +\"%H\")\"";
             color = "$primary";
-            font_family = "JetBrainsMono Bold";
+            font_family = "AdwaitaSans Bold";
             font_size = "180";
             position = "0, 150";
             halign = "center";
@@ -72,7 +72,7 @@ in {
             monitor = "";
             text = "cmd[update:1000] echo -e \"$(date +\"%M\")\"";
             color = "$onSurface";
-            font_family = "JetBrainsMono Bold";
+            font_family = "AdwaitaSans Bold";
             font_size = "180";
             position = "0, -75";
             halign = "center";
@@ -84,7 +84,7 @@ in {
             monitor = "";
             text = "cmd[update:1000] echo -e \"$(date +\"%a, %b %d\")\"";
             color = "$onSurface";
-            font_family = "JetBrainsMono Bold";
+            font_family = "AdwaitaSans Bold";
             position = "100, -100";
             halign = "left";
             valign = "top";
@@ -95,7 +95,7 @@ in {
             monitor = "";
             text = "cmd[update:1000] primaryHex=$primaryHex bash ~/.config/hypr/hyprlock-time.sh";
             color = "$onSurface";
-            font_family = "JetBrainsMono Bold";
+            font_family = "AdwaitaSans Bold";
             position = "100, -130";
             halign = "left";
             valign = "top";

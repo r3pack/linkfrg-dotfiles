@@ -1,6 +1,6 @@
 {
   icon_theme = "Material Icon Theme";
-  buffer_font_family = "JetBrains Mono";
+  buffer_font_family = "Adwaita Sans";
   minimap = {
     show = "always";
   };
