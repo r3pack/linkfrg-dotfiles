@@ -15,7 +15,7 @@ def is_main_desktop_file(desktop_file):
     return not any(x in name for x in ['url-handler', 'handler', 'wayland', 'wrapper'])
 
 
-def find_best_desktop_match(search_term):
+def get_best_desktop_match(search_term):
     # XDG base dirs
     data_home = os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share"))
     data_dirs = os.environ.get("XDG_DATA_DIRS", "/usr/local/share:/usr/share").split(":")
@@ -81,34 +81,14 @@ def get_desktop_info(desktop_path):
     return info
 
 
-def get_windows_class_names():
-    class_names = {}
-
-    for k, v in hyprland._windows.items():
-        class_names[k] = v.class_name
-
-    return class_names
-
-
-def find_apps_data_best_match(class_names):
-    best_matched_apps = {}
-    for win_id, class_name in class_names.items():
-        app_data = find_app_data_best_match(class_name)
-        if app_data is not None:
-            best_matched_apps[win_id] = app_data
-    return best_matched_apps
-
-
 def find_app_data_best_match(class_name):
-    best_match = None
-    match = find_best_desktop_match(class_name)
-    if match and (not best_match or match['score'] > best_match['score']):
-        best_match = match
-    if best_match and best_match['score'] >= 3:  # Found perfect match
-        desktop_info = get_desktop_info(best_match['path'])
-        return {
-                'icon': desktop_info['icon']
-                }
+    # Basic cache
+    if class_name in TaskList.class_to_app_data:
+        return TaskList.class_to_app_data[class_name]
+    desktop = get_best_desktop_match(class_name)
+    if desktop:
+        desktop_info = get_desktop_info(desktop['path'])
+        return {'icon': desktop_info['icon']}
     return None
 
 
@@ -126,48 +106,38 @@ def focus_window(win_id):
     )
 
 
-class TaskListWorkspace(widgets.Box):
-    running_apps = {}
+def get_windows_from_workspace(workspace_id):
+    return [window for window in hyprland.windows
+            if window.workspace_id == workspace_id or not window.title]
 
+
+class TaskListWorkspace(widgets.Box):
     def __init__(self, workspace: HyprlandWorkspace):
         super().__init__()
 
         self.workspace = workspace
+        TaskList.workspace_tasklists[workspace.id] = self
 
-        hyprland.connect("window_added", lambda x, window: self.on_win_add(window))
         if workspace.id == hyprland.active_workspace.id:
             self.on_init()
     
     def on_init(self) -> None:
-        winid_class_names = get_windows_class_names()
-        self.running_apps = find_apps_data_best_match(winid_class_names)
-        self.sync()
-        for k, v in hyprland._windows.items():
-            self.bind_win_close_event(v)
+        windows_from_workspace = get_windows_from_workspace(self.workspace.id)
 
-    def bind_win_close_event(self, window):
-        window.connect('closed', lambda win: self.on_win_closed(win))
-    
-    def on_win_closed(self, win):
-        self.running_apps.pop(win._address, None)
-        self.sync()
+        if windows_from_workspace:
+            for window in windows_from_workspace:
+                class_name = window.class_name
+                app_info = find_app_data_best_match(class_name)
+                if app_info:
+                    TaskList.running_apps[window.address] = app_info
+                    TaskList.bind_win_close_event(window)
 
-    def on_win_add(self, window) -> None:
-        if window.workspace_id != self.workspace.id:
-            return
-        new_app = find_app_data_best_match(window._class_name)
-
-        if new_app is None:
-            return
-
-        self.bind_win_close_event(window)
-        self.running_apps[window._address] = new_app
-        self.sync()
+            self.sync()
     
     def sync(self):
         app_buttons = []
 
-        for win_id, app in self.running_apps.items():
+        for win_id, app in TaskList.running_apps.items():
             window = hyprland.get_window_by_address(win_id)
             if window and window.workspace_id == self.workspace.id:
                 app_buttons.append(create_app_button(app, win_id))
@@ -176,8 +146,39 @@ class TaskListWorkspace(widgets.Box):
 
 
 class TaskList(widgets.Box):
+    running_apps = {}
+    class_to_app_data = {}
+    workspace_tasklists = {}
+
+    @classmethod
+    def bind_win_close_event(cls, window):
+        window.connect('closed', lambda win: cls.on_win_closed(win))
+
+    @classmethod
+    def on_win_closed(cls, window):
+        cls.running_apps.pop(window.address, None)
+        workspace_id = window.workspace_id
+        if workspace_id in cls.workspace_tasklists:
+            cls.workspace_tasklists[workspace_id].sync()
+
+    def on_win_add(self, window) -> None:
+        # Skip windows without titles (they are temporary)
+        if not window.title:
+            return
+
+        workspace_id = window.workspace_id
+        class_name = window.class_name
+        app_info = find_app_data_best_match(class_name)
+        if app_info:
+            self.running_apps[window.address] = app_info
+            self.bind_win_close_event(window)
+            if workspace_id in self.workspace_tasklists:
+                self.workspace_tasklists[workspace_id].sync()
+
     def __init__(self):
         if hyprland.is_available:
+            hyprland.connect("window_added", lambda x, window: self.on_win_add(window))
+
             child = [
                 widgets.EventBox(
                     child=hyprland.bind_many(
