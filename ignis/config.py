@@ -58,7 +58,7 @@ ControlCenter()
 added_on_external_monitor = False
 for i, monitor in enumerate(utils.get_monitors()):
     connector = monitor.get_property('connector')
-    if any(x in connector for x in ('HDMI-', 'DVI-', 'USB-', 'DL-')):
+    if any(x in connector for x in ('HDMI-', 'DVI-', 'USB-', 'DL-', 'HEADLESS-')):
         Bar(i)
         NotificationPopup(i)
         added_on_external_monitor = True
