@@ -65,21 +65,21 @@
     border-radius: 1rem;
     padding: 0.5rem;
     background-color: $surface;
-    margin: 0 0.5rem;
-    margin-left: 0;
 }
 
 .workspace {
     @include hover($primaryContainer);
-    border-radius: 1rem;
+    font-weight: 700;
+    border-radius: 0.5rem;
     margin: 0 0.25rem;
-    min-width: 0.7rem;
+    min-width: 1.5rem;
     min-height: 0.7rem;
     transition: 0.3s;
 
     &.active {
         @include hover($primary);
-        min-width: 2rem;
+        color: black;
+        min-width: 1.5rem;
     }
 }
 
